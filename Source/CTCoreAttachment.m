@@ -64,13 +64,26 @@
     return [self initWithData:data contentType:contentType filename:filename];
 }
 
-- (id)initWithData:(NSData *)data contentType:(NSString *)contentType 
-        filename:(NSString *)filename {
+- (id)initWithData:(NSData *)data contentType:(NSString *)contentType
+          filename:(NSString *)filename {
     self = [super init];
     if (self) {
         self.data = data;
         self.contentType = contentType;
         self.filename = filename;
+    }
+    return self;
+}
+
+- (id)initWithData:(NSData *)data contentType:(NSString *)contentType contentId:(NSString *)contentId filename:(NSString *)filename inline:(BOOL)attachmentInline
+{
+    self = [super init];
+    if (self) {
+        self.data = data;
+        self.contentType = contentType;
+        self.contentId  = contentId;
+        self.filename = filename;
+        self.attachedInline = attachmentInline;
     }
     return self;
 }

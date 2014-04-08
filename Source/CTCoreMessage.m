@@ -337,7 +337,8 @@
         CTMIME_SinglePart *attpart = [CTMIME_SinglePart mimeSinglePartWithData:[attachment data]];
         attpart.contentType = [attachment contentType];
         attpart.filename = [attachment filename];
-
+        attpart.contentId = [attachment contentId];
+        attpart.attachedInline = [attachment attachedInline];
         [multi addMIMEPart:attpart];
     }
 }

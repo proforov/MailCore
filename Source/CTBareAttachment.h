@@ -39,11 +39,18 @@
 */
 @interface CTBareAttachment : NSObject {
     CTMIME_SinglePart *mMIMEPart;
-    NSString *mFilename;
-    NSString *mContentType;
+    NSString    *mFilename;
+    NSString    *mContentType;
+    NSString    *mContentId;
+    NSNumber    *mSize;
+    BOOL        mAttachedInline;
 }
 @property(retain) NSString *filename;
 @property(retain) NSString *contentType;
+@property(retain) NSString *contentId;
+@property(retain) NSNumber *size;
+@property(assign) BOOL     attachedInline;
+
 @property(readonly) CTMIME_SinglePart *part;
 
 -(NSString*)decodedFilename;

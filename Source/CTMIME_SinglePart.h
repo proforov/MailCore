@@ -41,12 +41,14 @@ typedef void (^CTProgressBlock)(size_t curr, size_t max);
 
     NSData *mData;
     BOOL mAttached;
+    BOOL mAttachedInline;
     BOOL mFetched;
     NSString *mFilename;
     NSString *mContentId;
     NSError *lastError;
 }
 @property(nonatomic) BOOL attached;
+@property(nonatomic) BOOL attachedInline;
 @property(nonatomic) BOOL fetched;
 @property(nonatomic, retain) NSString *filename;
 @property(nonatomic, retain) NSString *contentId;

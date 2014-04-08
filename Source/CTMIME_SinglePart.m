@@ -56,6 +56,7 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
 @end
 
 @implementation CTMIME_SinglePart
+@synthesize attachedInline=mAttachedInline;
 @synthesize attached=mAttached;
 @synthesize filename=mFilename;
 @synthesize contentId=mContentId;
@@ -108,6 +109,8 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
                         if (mMimeFields->fld_disposition_filename == NULL && mMimeFields->fld_content_name != NULL)
                             mMimeFields->fld_disposition_filename = mMimeFields->fld_content_name;
                     }
+                    
+                    self.attachedInline = (disp->dsp_type->dsp_type == MAILMIME_DISPOSITION_TYPE_INLINE);
                 }
             }
 
@@ -203,14 +206,36 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
     struct mailmime *mime_sub;
     struct mailmime_content *content;
     int r;
-
+    
     if (mFilename) {
-        char *charData = (char *)[mFilename cStringUsingEncoding:NSUTF8StringEncoding];
-        char *dupeData = malloc(strlen(charData) + 1);
-        strcpy(dupeData, charData);
-        mime_fields = mailmime_fields_new_filename( MAILMIME_DISPOSITION_TYPE_ATTACHMENT, 
-                                                    dupeData,
-                                                    MAILMIME_MECHANISM_BASE64 ); 
+        if (mAttachedInline)
+        {
+            char *charData = (char *)[mFilename cStringUsingEncoding:NSUTF8StringEncoding];
+            char *dupeData = malloc(strlen(charData) + 1);
+            strcpy(dupeData, charData);
+            mime_fields = mailmime_fields_new_filename( MAILMIME_DISPOSITION_TYPE_INLINE,
+                                                       dupeData,
+                                                       MAILMIME_MECHANISM_BASE64 );
+            // These must be malloc-ated
+          	struct mailmime_field *mime_id = NULL;
+            charData = (char *)[mContentId cStringUsingEncoding:NSUTF8StringEncoding];
+            dupeData = malloc(strlen(charData) + 1);
+            strcpy(dupeData, charData);
+            mime_id = mailmime_field_new(MAILMIME_FIELD_ID, NULL, NULL,
+                                         dupeData, NULL, 1, NULL, NULL, NULL);
+            
+            clist_append(mime_fields->fld_list, mime_id);
+            
+        }
+        else
+        {
+            char *charData = (char *)[mFilename cStringUsingEncoding:NSUTF8StringEncoding];
+            char *dupeData = malloc(strlen(charData) + 1);
+            strcpy(dupeData, charData);
+            mime_fields = mailmime_fields_new_filename( MAILMIME_DISPOSITION_TYPE_ATTACHMENT,
+                                                       dupeData,
+                                                       MAILMIME_MECHANISM_BASE64 );
+        }
     } else {
         mime_fields = mailmime_fields_new_encoding(MAILMIME_MECHANISM_BASE64);
     }
